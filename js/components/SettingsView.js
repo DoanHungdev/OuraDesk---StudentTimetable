@@ -207,19 +207,20 @@ export const SettingsView = {
         </div>
 
         <!-- UNIVERSITY CURRICULUM & COURSE GROUPS ENGINE SECTION -->
+        <!-- UNIVERSITY CURRICULUM & COURSE GROUPS ENGINE SECTION -->
         ${!isTHPT ? `
         <div class="glass-card" style="padding: 20px 22px; margin-bottom: 16px; border-left: 5px solid #8B5CF6;">
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px;">
             <div>
               <div style="font-size: 0.72rem; font-weight: 700; color: #8B5CF6; text-transform: uppercase; letter-spacing: 0.04em;">
-                KIẾN TRÚC HỆ THỐNG: UNIVERSITY CURRICULUM & COURSE GROUPS
+                CHƯƠNG TRÌNH ĐÀO TẠO & NHÓM HỌC PHẦN
               </div>
               <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--color-text); margin-top: 2px; display: flex; align-items: center; gap: 8px;">
                 <i data-lucide="layers" style="color: #8B5CF6; width: 20px; height: 20px;"></i>
-                Khung Chương trình đào tạo & Nhóm học phần
+                Khung Chương trình đào tạo (Curriculum)
               </h3>
               <p style="font-size: 0.82rem; color: var(--color-text-secondary); margin-top: 2px;">
-                Xác định nhóm học phần động theo Trường → Ngành / Chương trình → Khóa học (Không dùng nhóm môn cố định).
+                Tự động xác định khung CTĐT và nhóm học phần theo Trường → Ngành → Khóa học.
               </p>
             </div>
 
@@ -233,8 +234,8 @@ export const SettingsView = {
             </div>
           </div>
 
-          <!-- University -> Campus -> Major -> Cohort -> Curriculum Selectors -->
-          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+          <!-- University -> Campus -> Major -> Cohort Selectors -->
+          <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 12px; margin-bottom: 14px;">
             <div>
               <label style="font-size: 0.74rem; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 4px; display: block;">NGÀNH / CHƯƠNG TRÌNH ĐÀO TẠO</label>
               <select id="set-select-major-id" class="glass-input" style="font-weight: 700;">
@@ -243,43 +244,64 @@ export const SettingsView = {
             </div>
 
             <div>
-              <label style="font-size: 0.74rem; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 4px; display: block;">KHÓA HỌC / NĂM HỌC</label>
+              <label style="font-size: 0.74rem; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 4px; display: block;">KHÓA</label>
               <select id="set-select-cohort" class="glass-input" style="font-weight: 600;">
                 <option value="20" ${activeCurriculumState.cohort === '20' ? 'selected' : ''}>Khóa 20 (2026–2027)</option>
                 <option value="19" ${activeCurriculumState.cohort === '19' ? 'selected' : ''}>Khóa 19 (2025–2026)</option>
                 <option value="18" ${activeCurriculumState.cohort === '18' ? 'selected' : ''}>Khóa 18 (2024–2025)</option>
                 <option value="69" ${activeCurriculumState.cohort === '69' ? 'selected' : ''}>Khóa 69 (2024–2029)</option>
+                <option value="68" ${activeCurriculumState.cohort === '68' ? 'selected' : ''}>Khóa 68 (2023–2028)</option>
                 <option value="66" ${activeCurriculumState.cohort === '66' ? 'selected' : ''}>Khóa 66 (2024–2028)</option>
               </select>
             </div>
-
-            <div>
-              <label style="font-size: 0.74rem; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 4px; display: block;">PHIÊN BẢN KHUNG CTĐT</label>
-              <select id="set-select-curriculum-id" class="glass-input" style="font-weight: 600;">
-                ${curriculumOptions}
-              </select>
-            </div>
           </div>
 
-          <!-- Active Curriculum Info Banner -->
-          <div style="background: linear-gradient(135deg, rgba(139,92,246,0.1) 0%, var(--color-glass) 100%); border-left: 4px solid #8B5CF6; border-radius: var(--radius-md); padding: 12px 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-            <div>
-              <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--color-text);">
-                ${activeCurriculumState.curriculum?.name || 'Khung CTĐT Kỹ thuật máy tính – Khóa 20'}
-              </h4>
-              <p style="font-size: 0.78rem; color: var(--color-text-secondary); margin-top: 2px;">
-                ${activeCurriculumState.curriculum?.description || 'Chương trình đào tạo kỹ sư Kỹ thuật máy tính chuẩn CDIO'}
+          <!-- Active Curriculum Summary Card or Empty State -->
+          ${activeCurriculumState.curriculum ? `
+            <div style="background: linear-gradient(135deg, rgba(139,92,246,0.08) 0%, var(--color-glass) 100%); border-left: 4px solid #8B5CF6; border-radius: var(--radius-md); padding: 14px 18px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+              <div>
+                <div style="font-size: 0.72rem; font-weight: 700; color: #8B5CF6; text-transform: uppercase; letter-spacing: 0.04em;">
+                  CHƯƠNG TRÌNH ĐÀO TẠO
+                </div>
+                <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--color-text); margin-top: 2px;">
+                  ${activeCurriculumState.major?.name || 'Kỹ thuật máy tính'}
+                </h4>
+                <div style="font-size: 0.8rem; color: var(--color-text-secondary); margin-top: 2px;">
+                  Khóa ${activeCurriculumState.cohort || '20'} · ${activeCurriculumState.curriculum?.academicYear || '2026–2027'}
+                </div>
+                <div style="margin-top: 8px; display: flex; align-items: center; gap: 6px; color: #10B981; font-size: 0.78rem; font-weight: 600;">
+                  <i data-lucide="check-circle-2" style="width: 15px; height: 15px;"></i>
+                  ✓ Đã tải khung chương trình (${(activeCurriculumState.groups || []).length} nhóm học phần · ${activeCurriculumState.curriculum?.totalCreditsRequired || 145} tín chỉ)
+                </div>
+              </div>
+              <div style="display: flex; gap: 6px;">
+                <span class="glass-pill" style="font-size: 0.75rem; font-weight: 700; background: #8B5CF6; color: white;">
+                  ${activeCurriculumState.curriculum?.totalCreditsRequired || 145} Tín Chỉ Tốt Nghiệp
+                </span>
+                <span class="glass-pill" style="font-size: 0.75rem; font-weight: 700; background: var(--color-primary); color: white;">
+                  ${(activeCurriculumState.groups || []).length} Nhóm Học Phần
+                </span>
+              </div>
+            </div>
+          ` : `
+            <div style="background: rgba(239, 68, 68, 0.05); border: 1px dashed rgba(239, 68, 68, 0.3); border-radius: var(--radius-md); padding: 18px 20px; margin-bottom: 14px; text-align: center;">
+              <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(239, 68, 68, 0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; color: #EF4444;">
+                <i data-lucide="info" style="width: 20px; height: 20px;"></i>
+              </div>
+              <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--color-text);">Chưa có khung chương trình cho ngành và khóa này.</h4>
+              <p style="font-size: 0.78rem; color: var(--color-text-secondary); margin-top: 3px; max-width: 460px; margin-left: auto; margin-right: auto;">
+                Bạn có thể tải lên sổ tay sinh viên / file CTĐT hoặc tự tạo các nhóm học phần cho ngành học của mình.
               </p>
+              <div style="display: flex; gap: 10px; justify-content: center; margin-top: 12px; flex-wrap: wrap;">
+                <button id="btn-empty-import-curriculum" class="glass-button glass-button-primary" style="font-size: 0.8rem; padding: 7px 14px;">
+                  <i data-lucide="file-up" style="width: 14px; height: 14px;"></i> Nhập khung chương trình
+                </button>
+                <button id="btn-empty-create-curriculum" class="glass-button" style="font-size: 0.8rem; padding: 7px 14px;">
+                  <i data-lucide="plus" style="width: 14px; height: 14px;"></i> Tạo khung chương trình thủ công
+                </button>
+              </div>
             </div>
-            <div style="display: flex; gap: 6px;">
-              <span class="glass-pill" style="font-size: 0.75rem; font-weight: 700; background: #8B5CF6; color: white;">
-                ${activeCurriculumState.curriculum?.totalCreditsRequired || 145} Tín Chỉ Tốt Nghiệp
-              </span>
-              <span class="glass-pill" style="font-size: 0.75rem; font-weight: 700; background: var(--color-primary); color: white;">
-                ${(activeCurriculumState.groups || []).length} Nhóm Học Phần
-              </span>
-            </div>
-          </div>
+          `}
 
           <!-- Course Groups Grid / Table -->
           <div style="background: var(--color-card-background); border: 1px solid var(--color-glass-border); border-radius: var(--radius-md); overflow: hidden;">
@@ -294,7 +316,13 @@ export const SettingsView = {
                 </tr>
               </thead>
               <tbody>
-                ${courseGroupsRowsHtml}
+                ${courseGroupsRowsHtml || `
+                  <tr>
+                    <td colspan="5" style="text-align: center; padding: 24px; color: var(--color-text-secondary); font-size: 0.82rem;">
+                      Chưa có nhóm học phần nào. Bấm "Nhập khung CTĐT" hoặc "Thêm nhóm học phần" để bắt đầu.
+                    </td>
+                  </tr>
+                `}
               </tbody>
             </table>
           </div>
@@ -539,7 +567,6 @@ export const SettingsView = {
     const profileSelect = container.querySelector('#set-select-profile-id');
     const majorSelect = container.querySelector('#set-select-major-id');
     const cohortSelect = container.querySelector('#set-select-cohort');
-    const curriculumSelect = container.querySelector('#set-select-curriculum-id');
 
     univSelect?.addEventListener('change', (e) => {
       const newUnivId = e.target.value;
@@ -570,14 +597,14 @@ export const SettingsView = {
       if (this.onReRender) this.onReRender();
     });
 
-    // Major change confirmation
+    // Major change confirmation & auto curriculum resolution
     majorSelect?.addEventListener('change', (e) => {
       const newMajorId = e.target.value;
       const activeCurriculumState = CurriculumEngine.getActiveCurriculumState();
       const newMajor = CurriculumEngine.getMajor(activeCurriculumState.univId, newMajorId);
 
       const confirmChange = confirm(
-        `Thay đổi chương trình đào tạo sang "${newMajor?.name || newMajorId}" sẽ thay đổi nhóm học phần và danh sách môn mặc định.\n\nBạn có muốn tiếp tục?`
+        `Thay đổi chương trình đào tạo sang "${newMajor?.name || newMajorId}" sẽ cập nhật nhóm học phần và danh sách môn tương ứng.\n\nBạn có muốn tiếp tục?`
       );
 
       if (confirmChange) {
@@ -594,7 +621,7 @@ export const SettingsView = {
       }
     });
 
-    // Cohort change
+    // Cohort change & auto curriculum resolution
     cohortSelect?.addEventListener('change', (e) => {
       const activeCurriculumState = CurriculumEngine.getActiveCurriculumState();
       CurriculumEngine.setActiveCurriculumState(
@@ -606,25 +633,20 @@ export const SettingsView = {
       if (this.onReRender) this.onReRender();
     });
 
-    // Curriculum version change
-    curriculumSelect?.addEventListener('change', (e) => {
-      const activeCurriculumState = CurriculumEngine.getActiveCurriculumState();
-      CurriculumEngine.setActiveCurriculumState(
-        activeCurriculumState.univId,
-        activeCurriculumState.campusId,
-        activeCurriculumState.majorId,
-        activeCurriculumState.cohort,
-        e.target.value
-      );
-      if (this.onReRender) this.onReRender();
-    });
-
     // Action buttons for Curriculum
     container.querySelector('#btn-import-curriculum')?.addEventListener('click', () => {
       CurriculumImportModal.openModal();
     });
 
     container.querySelector('#btn-add-custom-group')?.addEventListener('click', () => {
+      CustomCourseGroupModal.openModal();
+    });
+
+    container.querySelector('#btn-empty-import-curriculum')?.addEventListener('click', () => {
+      CurriculumImportModal.openModal();
+    });
+
+    container.querySelector('#btn-empty-create-curriculum')?.addEventListener('click', () => {
       CustomCourseGroupModal.openModal();
     });
 

@@ -65,7 +65,32 @@ export const CurriculumEngine = {
 
   getCurriculumById(curriculumId) {
     const all = this.getAllCurriculums();
-    return all.find(c => c.id === curriculumId) || PRESET_CURRICULUMS[0];
+    return all.find(c => c.id === curriculumId) || null;
+  },
+
+  // --- 3.5 Auto Resolve Curriculum (Auto-matched by Univ + Major + Cohort, no manual version picking) ---
+  resolveCurriculum({ universityId = 'haui', campusId = null, majorId = 'haui_ce', cohort = '20', academicYear = null }) {
+    const all = this.getAllCurriculums();
+    
+    // 1. Match on universityId + majorId + cohort (+ campusId if matching)
+    let matches = all.filter(c => 
+      c.universityId === universityId && 
+      c.majorId === majorId && 
+      (!cohort || String(c.cohort) === String(cohort))
+    );
+
+    if (campusId && matches.some(c => c.campusId === campusId)) {
+      matches = matches.filter(c => !c.campusId || c.campusId === campusId);
+    }
+
+    if (matches.length > 0) {
+      // If multiple versions match: pick active or default or highest version
+      const active = matches.find(c => c.isActive || c.isDefault) || matches[0];
+      return active;
+    }
+
+    // 2. If no curriculum found for this specific school + major + cohort:
+    return null;
   },
 
   // --- 4. Get Active Curriculum State ---
@@ -81,36 +106,32 @@ export const CurriculumEngine = {
     const campusId = state?.campusId || user?.campusId || 'haui_hn';
     const majorId = state?.majorId || user?.majorId || 'haui_ce';
     const cohort = state?.cohort || user?.cohort || '20';
-    let curriculumId = state?.curriculumId || user?.curriculumId || 'curriculum_haui_ce_k20';
 
     const university = this.getUniversity(univId);
     const campus = (university.campuses || []).find(c => c.id === campusId) || university.campuses?.[0];
     const major = this.getMajor(univId, majorId);
 
-    // Find curriculum matching univ + major + cohort
-    let curriculum = this.getCurriculumById(curriculumId);
-    if (!curriculum || curriculum.universityId !== univId || curriculum.majorId !== majorId) {
-      const matchedList = this.getCurriculums(univId, majorId);
-      curriculum = matchedList[0] || PRESET_CURRICULUMS[0];
-      curriculumId = curriculum.id;
-    }
+    // Auto resolve curriculum matching univ + major + cohort
+    const curriculum = this.resolveCurriculum({ universityId: univId, campusId, majorId, cohort });
+    const curriculumId = curriculum?.id || null;
 
     return {
       univId,
       university,
-      campusId,
+      campusId: campus?.id || campusId,
       campus,
       majorId,
       major,
       cohort,
       curriculumId,
       curriculum,
+      curriculumVersion: curriculum?.curriculumVersion || curriculum?.version || '1.0',
       groups: curriculum?.groups || []
     };
   },
 
   // --- 5. Set Active Curriculum State ---
-  setActiveCurriculumState(univId, campusId, majorId, cohort, curriculumId) {
+  setActiveCurriculumState(univId, campusId, majorId, cohort, curriculumId = null) {
     const university = this.getUniversity(univId);
     const campus = (university.campuses || []).find(c => c.id === campusId) || university.campuses?.[0];
     const major = this.getMajor(univId, majorId);
@@ -120,9 +141,12 @@ export const CurriculumEngine = {
       curr = this.getCurriculumById(curriculumId);
     }
     if (!curr || curr.universityId !== univId || curr.majorId !== majorId) {
-      const matched = this.getCurriculums(univId, majorId);
-      curr = matched[0] || PRESET_CURRICULUMS[0];
-      curriculumId = curr.id;
+      curr = this.resolveCurriculum({ 
+        universityId: univId, 
+        campusId: campus?.id || campusId, 
+        majorId: major?.id || majorId, 
+        cohort: cohort || '20' 
+      });
     }
 
     const stateToSave = {
@@ -130,7 +154,7 @@ export const CurriculumEngine = {
       campusId: campus?.id || campusId,
       majorId: major?.id || majorId,
       cohort: cohort || '20',
-      curriculumId: curr.id
+      curriculumId: curr?.id || null
     };
 
     try {
@@ -150,33 +174,27 @@ export const CurriculumEngine = {
       user.major = major?.name || user.major;
       user.majorId = major?.id || majorId;
       user.cohort = cohort || user.cohort;
-      user.curriculumId = curr.id;
-      user.curriculumName = curr.name;
+      user.curriculumId = curr?.id || null;
+      user.curriculumName = curr?.name || '';
+      user.curriculumVersion = curr?.curriculumVersion || curr?.version || '1.0';
       Storage.saveUser(user);
     }
 
     return this.getActiveCurriculumState();
   },
 
-  // --- 6. Dynamic Course Groups (NEVER HARD-CODED!) ---
+  // --- 6. Dynamic Course Groups (Taken directly from resolved Curriculum) ---
   getActiveCourseGroups() {
     const active = this.getActiveCurriculumState();
     if (active.groups && active.groups.length > 0) {
       return active.groups;
     }
-
-    // Fallback default groups if none exist for custom curriculum
-    return [
-      { id: 'grp_default_1', name: 'Giáo dục đại cương', code: 'GDC', color: '#AFC8F5', order: 1 },
-      { id: 'grp_default_2', name: 'Cơ sở ngành', code: 'CSN', color: '#A9DED5', order: 2 },
-      { id: 'grp_default_3', name: 'Chuyên ngành', code: 'CN', color: '#F5B28D', order: 3 },
-      { id: 'grp_default_4', name: 'Tự chọn', code: 'TC', color: '#C7B7F4', order: 4 }
-    ];
+    return [];
   },
 
   getCourseGroupById(groupId) {
     const groups = this.getActiveCourseGroups();
-    return groups.find(g => g.id === groupId) || groups[0];
+    return groups.find(g => g.id === groupId) || groups[0] || null;
   },
 
   // --- 7. Smart Course-to-Group Auto Mapper (For OCR / AI Import) ---

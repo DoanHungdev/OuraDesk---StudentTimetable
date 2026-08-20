@@ -6,6 +6,7 @@
 import { PRESET_HIGH_SCHOOLS } from '../data/highSchoolData.js';
 import { PRESET_UNIVERSITIES } from '../data/universities/universityProfiles.js';
 import { Storage } from '../utils/storage.js';
+import { CurriculumEngine } from '../utils/curriculumEngine.js';
 
 export const OnboardingModal = {
   backdrop: null,
@@ -297,6 +298,11 @@ export const OnboardingModal = {
         user.cohort = cohortVal;
         user.mode = 'university';
         user.avatar = 'TH';
+
+        const defaultCampus = univObj.campuses?.[0];
+        const majors = CurriculumEngine.getMajors(univObj.id);
+        const matchedMajor = majors.find(m => m.name.toLowerCase().includes(majorVal.toLowerCase()) || majorVal.toLowerCase().includes(m.name.toLowerCase())) || majors[0];
+        CurriculumEngine.setActiveCurriculumState(univObj.id, defaultCampus?.id, matchedMajor?.id, cohortVal);
       }
 
       Storage.setMode(this.selectedMode);
