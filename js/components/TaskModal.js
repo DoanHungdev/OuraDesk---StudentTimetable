@@ -97,11 +97,13 @@ export const TaskModal = {
         <div class="modal-footer">
           <button id="task-cancel-btn" class="glass-button">Hủy</button>
           <button id="task-save-btn" class="glass-button glass-button-primary">
-            <i class="fa-solid fa-check"></i> ${isEdit ? 'Lưu Bài Tập' : 'Thêm Bài Tập'}
+            <i data-lucide="check" style="width: 14px; height: 14px;"></i> ${isEdit ? 'Lưu Bài Tập' : 'Thêm Bài Tập'}
           </button>
         </div>
       </div>
     `;
+
+    if (window.lucide) window.lucide.createIcons();
 
     document.getElementById('task-modal-close-x')?.addEventListener('click', () => this.close());
     document.getElementById('task-cancel-btn')?.addEventListener('click', () => this.close());

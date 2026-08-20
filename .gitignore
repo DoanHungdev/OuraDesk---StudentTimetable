@@ -3,6 +3,12 @@
 *.tmp
 .DS_Store
 Thumbs.db
+node_modules/
+
+# Test output screenshots
+*.png
+!assets/*.png
+!screenshots/*.png
 
 # IDE and OS
 .vscode/

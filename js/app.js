@@ -870,6 +870,14 @@ class App {
     }
   }
 
+  openManualSchedule() {
+    ManualScheduleModal.openModal(this.courses);
+  }
+
+  openAddCourseModal() {
+    CourseModal.openAdd();
+  }
+
   saveAndReRender() {
     Storage.saveCourses(this.courses);
     if (this.user) Storage.saveUser(this.user);
@@ -955,5 +963,7 @@ class App {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  window.classScheduleApp = new App();
+  const instance = new App();
+  window.classScheduleApp = instance;
+  window.app = instance;
 });

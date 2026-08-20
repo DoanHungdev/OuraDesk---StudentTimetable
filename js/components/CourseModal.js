@@ -12,6 +12,7 @@ import { ProfileEngine } from '../utils/profileEngine.js';
 import { CurriculumEngine } from '../utils/curriculumEngine.js';
 import { ScheduleEngine } from '../utils/scheduleEngine.js';
 import { AcademicCalendar } from '../data/academicCalendar.js';
+import { CalendarEngine } from '../utils/calendarEngine.js';
 import { Storage } from '../utils/storage.js';
 
 export const CourseModal = {
@@ -70,6 +71,8 @@ export const CourseModal = {
       }
     ];
 
+    const defaultStartDate = AcademicCalendar.formatDateKey(CalendarEngine.selectedDate || new Date());
+
     this.formData = {
       id: '',
       universityId: activeState.univId,
@@ -89,7 +92,7 @@ export const CourseModal = {
       room: isTHPT ? 'Phòng 11A2' : 'Phòng A203',
       color: '#AFC8F5',
       category: firstGroup?.id || 'it',
-      startDate: '2026-08-18',
+      startDate: defaultStartDate,
       endDateMode: 'auto',
       customEndDate: '',
       notes: ''
@@ -729,6 +732,10 @@ export const CourseModal = {
     });
 
     this.backdrop.querySelector('#btn-goto-step3')?.addEventListener('click', () => {
+      const startInput = this.backdrop.querySelector('#course-start-date-input');
+      if (startInput && startInput.value) {
+        this.formData.startDate = startInput.value;
+      }
       if (this.tempSchedules.length === 0) {
         alert('Vui lòng thêm ít nhất 1 buổi học trong tuần!');
         return;
@@ -799,8 +806,8 @@ export const CourseModal = {
     // Remove schedule slot buttons
     this.backdrop.querySelectorAll('.btn-remove-sch-slot').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const idx = Number(e.currentTarget.getAttribute('data-idx'));
-        this.tempSchedules.splice(idx, 1);
+        const id = e.currentTarget.getAttribute('data-id');
+        this.tempSchedules = this.tempSchedules.filter(s => s.id !== id);
         this.renderWizard();
       });
     });
@@ -812,8 +819,9 @@ export const CourseModal = {
     });
 
     this.backdrop.querySelector('#btn-confirm-save-course')?.addEventListener('click', () => {
+      const courseStartDate = this.formData.startDate || AcademicCalendar.formatDateKey(CalendarEngine.selectedDate || new Date());
       const meta = ScheduleEngine.calculateScheduleMeta({
-        startDate: this.formData.startDate || '2026-08-18',
+        startDate: courseStartDate,
         totalPeriods: this.formData.totalHours || (this.formData.credits * 15) || 45,
         schedules: this.tempSchedules,
         mode: isTHPT ? 'high_school' : 'university',
@@ -828,7 +836,7 @@ export const CourseModal = {
 
       if (isManual && this.formData.customEndDate) {
         const val = ScheduleEngine.calculateOccurrencesBetweenDates({
-          startDate: this.formData.startDate || '2026-08-18',
+          startDate: courseStartDate,
           endDate: this.formData.customEndDate,
           schedules: this.tempSchedules,
           totalTargetPeriods: this.formData.totalHours || (this.formData.credits * 15) || 45,
@@ -846,7 +854,7 @@ export const CourseModal = {
         id: this.formData.id || ('crs-' + Date.now()),
         hoursPerWeek: meta.periodsPerWeek,
         totalHours: meta.totalPeriods,
-        startDate: this.formData.startDate,
+        startDate: courseStartDate,
         endDateMode: this.formData.endDateMode || 'auto',
         customEndDate: this.formData.customEndDate || '',
         calculatedEndDate: finalEndDate,

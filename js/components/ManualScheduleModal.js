@@ -15,6 +15,8 @@ import { Storage } from '../utils/storage.js';
 import { HIGH_SCHOOL_TIME_PROFILE } from '../data/highSchoolData.js';
 import { CurriculumEngine } from '../utils/curriculumEngine.js';
 import { ScheduleEngine } from '../utils/scheduleEngine.js';
+import { CalendarEngine } from '../utils/calendarEngine.js';
+import { AcademicCalendar } from '../data/academicCalendar.js';
 
 export const ManualScheduleModal = {
   backdrop: null,
@@ -49,7 +51,7 @@ export const ManualScheduleModal = {
   },
 
   openModal(courses = [], defaultDay = 1, defaultStartPeriod = 1, defaultEndPeriod = 3) {
-    this.allCourses = courses && courses.length > 0 ? courses : Storage.getCourses();
+    this.allCourses = Storage.getCourses();
     this.selectedDay = Number(defaultDay) || 1;
     this.selectedStartPeriod = Number(defaultStartPeriod) || 1;
     this.selectedEndPeriod = Number(defaultEndPeriod) || (this.selectedStartPeriod + 2);
@@ -200,6 +202,10 @@ export const ManualScheduleModal = {
                       { id: 'pe_art', name: 'Thể chất & Nghệ thuật' }
                     ] : CurriculumEngine.getActiveCourseGroups()).map(g => `<option value="${g.id}">${g.name} ${g.code ? `(${g.code})` : ''}</option>`).join('')}
                   </select>
+                </div>
+                <div style="grid-column: 1 / -1;">
+                  <label style="font-size: 0.72rem; font-weight: 600; color: var(--color-text-secondary); display: block; margin-bottom: 2px;">NGÀY BẮT ĐẦU HỌC *</label>
+                  <input type="date" id="manual-new-start-date" class="glass-input" value="${AcademicCalendar.formatDateKey(CalendarEngine.selectedDate || new Date())}" style="font-weight: 700; color: var(--color-primary); cursor: pointer;" required>
                 </div>
                 <div style="grid-column: 1 / -1;">
                   <label style="font-size: 0.72rem; font-weight: 600; color: var(--color-text-secondary); display: block; margin-bottom: 2px;">MÀU ĐÁNH DẤU</label>
@@ -711,8 +717,12 @@ export const ManualScheduleModal = {
       targetCourse.source = 'manual';
     }
 
+    const chosenStartDate = (this.isCreatingNewCourse || this.allCourses.length === 0)
+      ? (this.backdrop.querySelector('#manual-new-start-date')?.value || AcademicCalendar.formatDateKey(CalendarEngine.selectedDate || new Date()))
+      : (targetCourse.startDate || AcademicCalendar.formatDateKey(CalendarEngine.selectedDate || new Date()));
+
     const meta = ScheduleEngine.calculateScheduleMeta({
-      startDate: targetCourse.startDate || '2026-08-18',
+      startDate: chosenStartDate,
       totalPeriods: targetCourse.totalHours || (targetCourse.credits * 15) || 45,
       schedules: targetCourse.schedules,
       mode: isTHPT ? 'high_school' : 'university',
@@ -721,9 +731,10 @@ export const ManualScheduleModal = {
 
     targetCourse.hoursPerWeek = meta.periodsPerWeek;
     targetCourse.totalHours = meta.totalPeriods;
-    targetCourse.startDate = targetCourse.startDate || '2026-08-18';
+    targetCourse.startDate = chosenStartDate;
     targetCourse.calculatedEndDate = meta.calculatedEndDate;
     targetCourse.calculatedEndDateIso = meta.calculatedEndDateIso;
+    targetCourse.endDateMode = targetCourse.endDateMode || 'auto';
     targetCourse.totalWeeks = meta.totalWeeks;
     targetCourse.totalSessions = meta.totalSessions;
 
@@ -746,8 +757,11 @@ export const ManualScheduleModal = {
       return;
     }
 
+    const mode = Storage.getMode();
+    const isTHPT = mode === 'high_school';
     const activeState = ProfileEngine.getActiveProfileState();
     const colors = ['#AFC8F5', '#F5B28D', '#C7B7F4', '#F7D99A', '#A9DED5', '#F4B5C2'];
+    const defaultStartDate = AcademicCalendar.formatDateKey(CalendarEngine.selectedDate || new Date());
 
     const newCoursesToCreate = [];
 
@@ -781,18 +795,39 @@ export const ManualScheduleModal = {
           profileId: activeState.profileId,
           name: item.name,
           code: item.code || 'SUB',
-          credits: 3,
-          hoursPerWeek: 3,
+          credits: isTHPT ? 0 : 3,
+          hoursPerWeek: isTHPT ? 3 : 3,
           totalHours: 45,
           type: 'theory',
           room: item.room,
           color: colors[idx % colors.length],
           category: 'it',
           schedules: [schedule],
-          source: 'manual'
+          source: 'manual',
+          startDate: defaultStartDate
         };
         newCoursesToCreate.push(newCourse);
       }
+    });
+
+    // Compute metadata for all new courses
+    newCoursesToCreate.forEach(course => {
+      const meta = ScheduleEngine.calculateScheduleMeta({
+        startDate: defaultStartDate,
+        totalPeriods: course.totalHours || (course.credits * 15) || 45,
+        schedules: course.schedules,
+        mode: isTHPT ? 'high_school' : 'university',
+        profileId: activeState.profileId
+      });
+
+      course.hoursPerWeek = meta.periodsPerWeek;
+      course.totalHours = meta.totalPeriods;
+      course.startDate = defaultStartDate;
+      course.calculatedEndDate = meta.calculatedEndDate;
+      course.calculatedEndDateIso = meta.calculatedEndDateIso;
+      course.endDateMode = 'auto';
+      course.totalWeeks = meta.totalWeeks;
+      course.totalSessions = meta.totalSessions;
     });
 
     this.close();

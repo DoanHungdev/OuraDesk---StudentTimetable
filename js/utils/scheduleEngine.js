@@ -279,13 +279,13 @@ export const ScheduleEngine = {
     if (!course) return false;
     const curDate = typeof date === 'string' ? AcademicCalendar.parseDate(date) : date;
     const dateKey = AcademicCalendar.formatDateKey(curDate);
+    if (!dateKey) return false;
 
-    const startKey = AcademicCalendar.formatDateKey(course.startDate || '2026-08-03');
-    const endKey = AcademicCalendar.formatDateKey(
-      course.endDateMode === 'manual' && course.customEndDate
-        ? course.customEndDate
-        : (course.calculatedEndDateIso || course.calculatedEndDate || course.endDate || '2026-12-31')
-    );
+    const startKey = AcademicCalendar.formatDateKey(course.startDate) || '2026-08-03';
+    const endRaw = course.endDateMode === 'manual' && course.customEndDate
+      ? course.customEndDate
+      : (course.calculatedEndDateIso || course.calculatedEndDate || course.endDate || '2026-12-31');
+    const endKey = AcademicCalendar.formatDateKey(endRaw) || '2026-12-31';
 
     return dateKey >= startKey && dateKey <= endKey;
   },
