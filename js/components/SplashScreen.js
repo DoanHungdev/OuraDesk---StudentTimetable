@@ -1,4 +1,4 @@
-﻿/**
+/**
  * SplashScreen Component — OuraDesk High-Precision Motion Intro
  * Recreated 1:1 from the Reference Video ("Video Project.mp4"):
  * - Initial Coral square growing and rotating like a diamond (45deg)
@@ -17,14 +17,6 @@ export const SplashScreen = {
 
   init(onComplete) {
     this.onComplete = onComplete;
-    
-    // Session check: play once per session unless replayed
-    const hasPlayed = sessionStorage.getItem('ouradesk.introPlayed');
-    if (hasPlayed === 'true') {
-      if (this.onComplete) this.onComplete();
-      return;
-    }
-
     this.mount();
     this.startAnimation();
   },
@@ -38,6 +30,16 @@ export const SplashScreen = {
       document.body.appendChild(el);
     }
     this.container = el;
+
+    // Allow user to click anywhere or press Esc/Space to skip immediately if they want
+    this.container.onclick = () => this.finish();
+    const keyHandler = (e) => {
+      if (e.key === 'Escape' || e.key === ' ' || e.key === 'Enter') {
+        this.finish();
+        window.removeEventListener('keydown', keyHandler);
+      }
+    };
+    window.addEventListener('keydown', keyHandler);
 
     this.container.innerHTML = `
       <div class="splash-stage">

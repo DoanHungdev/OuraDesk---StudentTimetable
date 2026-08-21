@@ -1,4 +1,4 @@
-﻿import { createTestBrowser } from './test_helper.js';
+import { createTestBrowser } from './test_helper.js';
 
 async function run() {
   console.log("==================================================");
@@ -92,16 +92,23 @@ async function run() {
     console.log("✓ TEST 5 PASSED: Transition hoàn tất, dashboard sẵn sàng!");
 
     // ---------------------------------------------------------------------------------
-    // TEST 6: Reload lần 2 trong cùng session -> Skip Splash ngay lập tức
+    // TEST 6: Bấm Click / Escape -> Bỏ qua Splash Screen ngay lập tức (Skip)
     // ---------------------------------------------------------------------------------
-    console.log("\n--- TEST 6: Reload trang trong session -> Skip Splash ngay lập tức ---");
+    console.log("\n--- TEST 6: Bấm Click hoặc Escape -> Bỏ qua Intro ngay lập tức ---");
     await page.reload({ waitUntil: "domcontentloaded" });
-    await page.waitForTimeout(200);
-    const splashOnReload = await page.$("#ouradesk-splash") !== null;
-    if (splashOnReload) {
-      throw new Error("TEST 6 FAILED: Không skip splash screen khi reload trong session!");
+    await page.waitForTimeout(300);
+    const hasSplashOnReload = await page.$("#ouradesk-splash") !== null;
+    if (!hasSplashOnReload) {
+      throw new Error("TEST 6 FAILED: Không tìm thấy Splash Screen khi tải lại!");
     }
-    console.log("✓ TEST 6 PASSED: Không bị lặp lại splash screen trong cùng session!");
+    // Click on splash screen to skip
+    await page.click("#ouradesk-splash");
+    await page.waitForTimeout(500);
+    const splashAfterClick = await page.$("#ouradesk-splash") !== null;
+    if (splashAfterClick) {
+      throw new Error("TEST 6 FAILED: Không thể click để bỏ qua Splash Screen!");
+    }
+    console.log("✓ TEST 6 PASSED: Click to skip / Bỏ qua Splash Screen hoạt động tức thì!");
 
     console.log("\n==================================================");
     console.log("  TẤT CẢ CÁC BÀI TEST MOTION INTRO ĐÃ PASS 100%!");
