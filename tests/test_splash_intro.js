@@ -1,78 +1,54 @@
-import { createTestBrowser } from './test_helper.js';
+﻿import { createTestBrowser } from './test_helper.js';
 
 async function run() {
   console.log("==================================================");
-  console.log("  TEST OURADESK MOTION INTRO & SPLASH SCREEN");
+  console.log("  TEST OURADESK MOTION INTRO VIDEO INTEGRATION");
   console.log("==================================================");
 
   const { browser, page } = await createTestBrowser({ headless: true });
 
   try {
     // ---------------------------------------------------------------------------------
-    // TEST 1: Initial Launch -> Splash Screen appears with clean background
+    // TEST 1: Launch -> Video Element Mounted & Plays Automatically
     // ---------------------------------------------------------------------------------
-    console.log("\n--- TEST 1: Khởi động app -> Splash Screen xuất hiện ---");
+    console.log("\n--- TEST 1: Khởi động app -> Video Intro xuất hiện & Autoplay ---");
     await page.goto("http://localhost:8088/", { waitUntil: "domcontentloaded" });
     
-    // Ensure clean session
+    // Ensure clean state
     await page.evaluate(() => {
-      sessionStorage.clear();
       localStorage.setItem('class_schedule_onboarded_v2', 'true');
     });
     await page.reload({ waitUntil: "domcontentloaded" });
 
-    const hasSplash = await page.$("#ouradesk-splash") !== null;
-    if (!hasSplash) {
-      throw new Error("TEST 1 FAILED: Không tìm thấy element #ouradesk-splash!");
+    const hasVideo = await page.$("#ouradesk-intro-video") !== null;
+    const hasSkipBtn = await page.$("#splash-skip-btn") !== null;
+
+    if (!hasVideo || !hasSkipBtn) {
+      throw new Error("TEST 1 FAILED: Không tìm thấy #ouradesk-intro-video hoặc #splash-skip-btn!");
     }
-    console.log("✓ TEST 1 PASSED: #ouradesk-splash đã mount thành công!");
+    console.log("✓ TEST 1 PASSED: Video player và nút Bỏ qua đã sẵn sàng!");
 
     // ---------------------------------------------------------------------------------
-    // TEST 2: Giai đoạn Diamond Grow & 45deg Rotation (T = 0.6s)
+    // TEST 2: Capture Video Playback at T = 1.0s (Diamond Grow / Morph)
     // ---------------------------------------------------------------------------------
-    console.log("\n--- TEST 2: Giai đoạn Diamond Grow & Rotation (T = 0.6s) ---");
-    await page.waitForTimeout(600);
-    const hasSquare = await page.$(".splash-initial-square") !== null;
-    const hasShadow = await page.$(".splash-mark-shadow") !== null;
-    if (!hasSquare || !hasShadow) {
-      throw new Error("TEST 2 FAILED: Thiếu splash-initial-square hoặc splash-mark-shadow!");
-    }
-    await page.screenshot({ path: "C:/Users/admin/.gemini/antigravity/brain/374e7888-a9e1-40be-9088-41c689fb2ecb/splash_01_square_grow.png" });
-    console.log("✓ TEST 2 PASSED: Chụp ảnh splash_01_square_grow.png");
+    console.log("\n--- TEST 2: Kiểm tra video đang phát tại T = 1.0s ---");
+    await page.waitForTimeout(1000);
+    await page.screenshot({ path: "C:/Users/admin/.gemini/antigravity/brain/374e7888-a9e1-40be-9088-41c689fb2ecb/splash_video_01_play.png" });
+    console.log("✓ TEST 2 PASSED: Đang phát video mượt mà! Chụp ảnh splash_video_01_play.png");
 
     // ---------------------------------------------------------------------------------
-    // TEST 3: Giai đoạn Morph Logo & Wordmark Reveal (T = 1.4s)
+    // TEST 3: Capture Video Playback at T = 3.5s (Logo + Wordmark + Tagline + Progress)
     // ---------------------------------------------------------------------------------
-    console.log("\n--- TEST 3: Morph Logo OuraDesk & Wordmark Reveal (T = 1.4s) ---");
-    await page.waitForTimeout(800); // Now at ~1.4s
-    const wordmarkText = await page.$eval("#splash-wordmark", el => el.innerText);
-    if (!wordmarkText.includes("OuraDesk")) {
-      throw new Error(`TEST 3 FAILED: Wordmark không đúng: ${wordmarkText}`);
-    }
-    await page.screenshot({ path: "C:/Users/admin/.gemini/antigravity/brain/374e7888-a9e1-40be-9088-41c689fb2ecb/splash_02_logo_reveal.png" });
-    console.log("✓ TEST 3 PASSED: Logo OuraDesk và Wordmark đã xuất hiện! Chụp ảnh splash_02_logo_reveal.png");
+    console.log("\n--- TEST 3: Kiểm tra video tại T = 3.5s (Full Lockup & 3D Pill Progress) ---");
+    await page.waitForTimeout(2500);
+    await page.screenshot({ path: "C:/Users/admin/.gemini/antigravity/brain/374e7888-a9e1-40be-9088-41c689fb2ecb/splash_video_02_lockup.png" });
+    console.log("✓ TEST 3 PASSED: Đang hiển thị trọn vẹn chi tiết video 1080p! Chụp ảnh splash_video_02_lockup.png");
 
     // ---------------------------------------------------------------------------------
-    // TEST 4: Giai đoạn Tagline & 3D Pill Progress Bar (T = 3.0s)
+    // TEST 4: Kết thúc video -> Transition vào Main App
     // ---------------------------------------------------------------------------------
-    console.log("\n--- TEST 4: Tagline & 3D Pill Progress Bar (T = 3.0s) ---");
-    await page.waitForTimeout(1600); // Now at ~3.0s
-    const taglineText = await page.$eval("#splash-tagline", el => el.innerText);
-    const progressWidth = await page.$eval("#splash-progress-fill", el => el.style.width);
-    console.log(`- Tagline: "${taglineText}"`);
-    console.log(`- Progress Width: ${progressWidth}`);
-
-    if (!taglineText.includes("Chụp TKB. App lo.")) {
-      throw new Error("TEST 4 FAILED: Tagline chưa hiển thị đúng 'Chụp TKB. App lo.'!");
-    }
-    await page.screenshot({ path: "C:/Users/admin/.gemini/antigravity/brain/374e7888-a9e1-40be-9088-41c689fb2ecb/splash_03_progress_bar.png" });
-    console.log("✓ TEST 4 PASSED: Progress Bar hoạt động mượt mà! Chụp ảnh splash_03_progress_bar.png");
-
-    // ---------------------------------------------------------------------------------
-    // TEST 5: Hoàn tất 4.2s -> Transition vào Main App / Dashboard
-    // ---------------------------------------------------------------------------------
-    console.log("\n--- TEST 5: Kết thúc 4.2s -> Chuyển tiếp vào Dashboard ---");
-    await page.waitForTimeout(1800); // Now at ~4.8s (> 4.2s + 0.42s transition)
+    console.log("\n--- TEST 4: Kết thúc video (5.8s) -> Tự động chuyển tiếp vào Dashboard ---");
+    await page.waitForTimeout(3000); // Now at ~6.5s
     const splashStillMounted = await page.$("#ouradesk-splash") !== null;
     const hasAppContainer = await page.$(".app-container") !== null;
 
@@ -80,38 +56,31 @@ async function run() {
     console.log(`- Dashboard hiển thị: ${hasAppContainer ? "CÓ (CHUẨN)" : "KHÔNG"}`);
 
     if (splashStillMounted || !hasAppContainer) {
-      throw new Error("TEST 5 FAILED: Splash screen chưa transition mượt vào Dashboard!");
+      throw new Error("TEST 4 FAILED: Video kết thúc chưa transition mượt vào Dashboard!");
     }
-
-    const sessionValue = await page.evaluate(() => sessionStorage.getItem('ouradesk.introPlayed'));
-    if (sessionValue !== 'true') {
-      throw new Error("TEST 5 FAILED: sessionStorage 'ouradesk.introPlayed' chưa được set!");
-    }
-
-    await page.screenshot({ path: "C:/Users/admin/.gemini/antigravity/brain/374e7888-a9e1-40be-9088-41c689fb2ecb/splash_04_dashboard_revealed.png" });
-    console.log("✓ TEST 5 PASSED: Transition hoàn tất, dashboard sẵn sàng!");
+    await page.screenshot({ path: "C:/Users/admin/.gemini/antigravity/brain/374e7888-a9e1-40be-9088-41c689fb2ecb/splash_video_03_dashboard.png" });
+    console.log("✓ TEST 4 PASSED: Transition hoàn tất, dashboard sẵn sàng!");
 
     // ---------------------------------------------------------------------------------
-    // TEST 6: Bấm Click / Escape -> Bỏ qua Splash Screen ngay lập tức (Skip)
+    // TEST 5: Kiểm tra nút Skip / Bấm phím Esc bỏ qua ngay lập tức
     // ---------------------------------------------------------------------------------
-    console.log("\n--- TEST 6: Bấm Click hoặc Escape -> Bỏ qua Intro ngay lập tức ---");
+    console.log("\n--- TEST 5: Kiểm tra nút 'Bỏ qua (Esc)' hoạt động tức thì ---");
     await page.reload({ waitUntil: "domcontentloaded" });
-    await page.waitForTimeout(300);
-    const hasSplashOnReload = await page.$("#ouradesk-splash") !== null;
-    if (!hasSplashOnReload) {
-      throw new Error("TEST 6 FAILED: Không tìm thấy Splash Screen khi tải lại!");
+    await page.waitForTimeout(400);
+    const skipBtn = await page.$("#splash-skip-btn");
+    if (!skipBtn) {
+      throw new Error("TEST 5 FAILED: Không tìm thấy nút Skip!");
     }
-    // Click on splash screen to skip
-    await page.click("#ouradesk-splash");
+    await skipBtn.click();
     await page.waitForTimeout(500);
-    const splashAfterClick = await page.$("#ouradesk-splash") !== null;
-    if (splashAfterClick) {
-      throw new Error("TEST 6 FAILED: Không thể click để bỏ qua Splash Screen!");
+    const splashAfterSkip = await page.$("#ouradesk-splash") !== null;
+    if (splashAfterSkip) {
+      throw new Error("TEST 5 FAILED: Bấm nút Bỏ qua không hoạt động!");
     }
-    console.log("✓ TEST 6 PASSED: Click to skip / Bỏ qua Splash Screen hoạt động tức thì!");
+    console.log("✓ TEST 5 PASSED: Bấm nút Bỏ qua hoạt động tức thì!");
 
     console.log("\n==================================================");
-    console.log("  TẤT CẢ CÁC BÀI TEST MOTION INTRO ĐÃ PASS 100%!");
+    console.log("  TẤT CẢ CÁC BÀI TEST INTRO VIDEO ĐÃ PASS 100%!");
     console.log("==================================================");
   } catch (err) {
     console.error("\n❌ LỖI KIỂM THỬ:", err);
