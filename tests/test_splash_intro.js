@@ -1,4 +1,4 @@
-import { createTestBrowser } from './test_helper.js';
+﻿import { createTestBrowser } from './test_helper.js';
 
 async function run() {
   console.log("==================================================");
@@ -9,7 +9,7 @@ async function run() {
 
   try {
     // ---------------------------------------------------------------------------------
-    // TEST 1: Initial Launch -> Splash Screen appears with clean #F7F7F5 background
+    // TEST 1: Initial Launch -> Splash Screen appears with clean background
     // ---------------------------------------------------------------------------------
     console.log("\n--- TEST 1: Khởi động app -> Splash Screen xuất hiện ---");
     await page.goto("http://localhost:8088/", { waitUntil: "domcontentloaded" });
@@ -28,9 +28,9 @@ async function run() {
     console.log("✓ TEST 1 PASSED: #ouradesk-splash đã mount thành công!");
 
     // ---------------------------------------------------------------------------------
-    // TEST 2: Giai đoạn Square Grow (T = 0.6s)
+    // TEST 2: Giai đoạn Diamond Grow & 45deg Rotation (T = 0.6s)
     // ---------------------------------------------------------------------------------
-    console.log("\n--- TEST 2: Giai đoạn Square Grow & Rotation (T = 0.6s) ---");
+    console.log("\n--- TEST 2: Giai đoạn Diamond Grow & Rotation (T = 0.6s) ---");
     await page.waitForTimeout(600);
     const hasSquare = await page.$(".splash-initial-square") !== null;
     const hasShadow = await page.$(".splash-mark-shadow") !== null;
@@ -41,10 +41,10 @@ async function run() {
     console.log("✓ TEST 2 PASSED: Chụp ảnh splash_01_square_grow.png");
 
     // ---------------------------------------------------------------------------------
-    // TEST 3: Giai đoạn Morph Logo & Wordmark Reveal (T = 2.0s)
+    // TEST 3: Giai đoạn Morph Logo & Wordmark Reveal (T = 1.4s)
     // ---------------------------------------------------------------------------------
-    console.log("\n--- TEST 3: Morph Logo OuraDesk & Wordmark Reveal (T = 2.0s) ---");
-    await page.waitForTimeout(1400); // Now at ~2.0s
+    console.log("\n--- TEST 3: Morph Logo OuraDesk & Wordmark Reveal (T = 1.4s) ---");
+    await page.waitForTimeout(800); // Now at ~1.4s
     const wordmarkText = await page.$eval("#splash-wordmark", el => el.innerText);
     if (!wordmarkText.includes("OuraDesk")) {
       throw new Error(`TEST 3 FAILED: Wordmark không đúng: ${wordmarkText}`);
@@ -53,10 +53,10 @@ async function run() {
     console.log("✓ TEST 3 PASSED: Logo OuraDesk và Wordmark đã xuất hiện! Chụp ảnh splash_02_logo_reveal.png");
 
     // ---------------------------------------------------------------------------------
-    // TEST 4: Giai đoạn Tagline & Loading Progress Bar (T = 4.2s)
+    // TEST 4: Giai đoạn Tagline & 3D Pill Progress Bar (T = 3.0s)
     // ---------------------------------------------------------------------------------
-    console.log("\n--- TEST 4: Tagline & Loading Bar Progress (T = 4.2s) ---");
-    await page.waitForTimeout(2200); // Now at ~4.2s
+    console.log("\n--- TEST 4: Tagline & 3D Pill Progress Bar (T = 3.0s) ---");
+    await page.waitForTimeout(1600); // Now at ~3.0s
     const taglineText = await page.$eval("#splash-tagline", el => el.innerText);
     const progressWidth = await page.$eval("#splash-progress-fill", el => el.style.width);
     console.log(`- Tagline: "${taglineText}"`);
@@ -69,10 +69,10 @@ async function run() {
     console.log("✓ TEST 4 PASSED: Progress Bar hoạt động mượt mà! Chụp ảnh splash_03_progress_bar.png");
 
     // ---------------------------------------------------------------------------------
-    // TEST 5: Hoàn tất 5.8s -> Transition vào Main App / Dashboard
+    // TEST 5: Hoàn tất 4.2s -> Transition vào Main App / Dashboard
     // ---------------------------------------------------------------------------------
-    console.log("\n--- TEST 5: Kết thúc 5.8s -> Chuyển tiếp vào Dashboard ---");
-    await page.waitForTimeout(2500); // Now at ~6.7s (> 5.8s + 0.48s transition)
+    console.log("\n--- TEST 5: Kết thúc 4.2s -> Chuyển tiếp vào Dashboard ---");
+    await page.waitForTimeout(1800); // Now at ~4.8s (> 4.2s + 0.42s transition)
     const splashStillMounted = await page.$("#ouradesk-splash") !== null;
     const hasAppContainer = await page.$(".app-container") !== null;
 

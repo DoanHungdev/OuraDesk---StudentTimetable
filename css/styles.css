@@ -1951,16 +1951,16 @@ input, button, select, textarea {
 }
 
 /* ==========================================================================
-   OURADESK MOTION INTRO & SPLASH SCREEN (5.8S TIMELINE SPECIFICATION)
-   Minimal, Clean, Quiet, Brand-focused
+   OURADESK MOTION INTRO & SPLASH SCREEN (MATCHING VIDEO PROJECT.MP4 1:1)
+   Minimal, Clean, Soft Warm Light, High-Precision Motion
    ========================================================================== */
 
 .ouradesk-splash-screen {
   position: fixed;
   inset: 0;
   z-index: 999999;
-  background: #F7F7F5;
-  background-image: radial-gradient(circle at 50% 45%, #FFFFFF 0%, #F7F7F5 75%);
+  background: #F6F6F4;
+  background-image: radial-gradient(circle at 50% 46%, #FFFFFF 0%, #F6F6F4 80%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1968,7 +1968,7 @@ input, button, select, textarea {
   -webkit-user-select: none;
   font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   opacity: 1;
-  transition: opacity 0.48s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .splash-stage {
@@ -1977,10 +1977,10 @@ input, button, select, textarea {
   align-items: center;
   justify-content: center;
   width: 100%;
-  max-width: 600px;
-  padding: 24px;
+  max-width: 640px;
+  padding: 20px;
   transform: scale(1);
-  transition: transform 0.48s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* --- LOGO LOCKUP CONTAINER --- */
@@ -1988,60 +1988,62 @@ input, button, select, textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  min-height: 96px;
+  gap: 20px;
+  min-height: 110px;
   position: relative;
+  transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* --- LOGO MARK & MORPHING SQUARE --- */
+/* --- LOGO MARK & MORPHING SHAPE --- */
 .splash-mark-container {
-  width: 84px;
-  height: 84px;
+  width: 104px;
+  height: 104px;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Dynamic Soft Shadow */
+/* Warm Diffuse Ambient Shadow */
 .splash-mark-shadow {
   position: absolute;
-  bottom: -10px;
+  bottom: -16px;
   left: 50%;
   transform: translateX(-50%) scale(0.15);
-  width: 72px;
-  height: 16px;
-  background: rgba(230, 80, 50, 0.18);
-  filter: blur(10px);
+  width: 90px;
+  height: 20px;
+  background: rgba(235, 90, 50, 0.22);
+  filter: blur(14px);
   border-radius: 50%;
   opacity: 0;
   pointer-events: none;
-  transition: transform 0.95s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.8s ease;
+  transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.7s ease;
 }
 
-/* Initial 12px Coral Dot / Square */
+/* Initial Square that grows and rotates into a Diamond (45deg) */
 .splash-initial-square {
   position: absolute;
-  width: 12px;
-  height: 12px;
-  border-radius: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
   background: linear-gradient(135deg, #F16C6C 0%, #F59E72 100%);
   opacity: 0;
-  transform: scale(0.2) rotate(0deg);
-  box-shadow: 0 4px 14px rgba(241, 108, 108, 0.25);
-  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+  transform: scale(0.3) rotate(0deg);
+  box-shadow: 0 4px 16px rgba(241, 108, 108, 0.3);
+  transition: opacity 0.2s ease-out;
 }
 
-/* Step 1 (0.05s): Dot appears */
+/* Step 1 (0.05s): Dot appears at center */
 .step-dot-appear .splash-initial-square {
   opacity: 1;
   transform: scale(1) rotate(0deg);
 }
 
-/* Step 2 (0.20s - 1.20s): Square grows, rotates (-12deg -> 10deg -> -3deg -> 0deg), lifts Y */
+/* Step 2 (0.20s - 1.00s): Diamond Grow & 45deg Rotation */
 .step-square-grow .splash-initial-square {
-  animation: splashSquareGrowAnim 0.98s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: splashDiamondGrowAnim 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .step-square-grow .splash-mark-shadow {
@@ -2049,54 +2051,67 @@ input, button, select, textarea {
   transform: translateX(-50%) scale(1);
 }
 
-@keyframes splashSquareGrowAnim {
+@keyframes splashDiamondGrowAnim {
   0% {
-    width: 12px;
-    height: 12px;
-    border-radius: 3px;
-    transform: scale(1) rotate(-12deg) translateY(0);
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+    transform: scale(1) rotate(0deg) translateY(0);
   }
-  35% {
-    width: 90px;
-    height: 90px;
-    border-radius: 20px;
-    transform: scale(1.05) rotate(10deg) translateY(-8px);
+  40% {
+    width: 108px;
+    height: 108px;
+    border-radius: 26px;
+    transform: scale(1.04) rotate(45deg) translateY(-12px);
   }
-  70% {
-    width: 84px;
-    height: 84px;
-    border-radius: 18px;
-    transform: scale(0.98) rotate(-3deg) translateY(2px);
+  80% {
+    width: 104px;
+    height: 104px;
+    border-radius: 22px;
+    transform: scale(0.98) rotate(45deg) translateY(2px);
   }
   100% {
-    width: 84px;
-    height: 84px;
-    border-radius: 18px;
-    transform: scale(1) rotate(0deg) translateY(0);
+    width: 104px;
+    height: 104px;
+    border-radius: 22px;
+    transform: scale(1) rotate(45deg) translateY(0);
   }
 }
 
-/* SVG Vector Brand Mark */
+/* Vector SVG Brand Mark */
 .splash-svg-mark {
-  width: 84px;
-  height: 84px;
+  width: 104px;
+  height: 104px;
   position: absolute;
   inset: 0;
   opacity: 0;
-  transform: scale(0.96);
+  transform: scale(0.94);
   pointer-events: none;
-  transition: opacity 0.38s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .sp-part {
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Step 3 (1.20s): Morph from solid square to Vector Logo Mark with corner peel */
+/* Step 3 (1.00s): Rotate from 45deg back to 0deg and Morph to OuraDesk Logo Mark */
 .step-logo-morph .splash-initial-square {
-  opacity: 0;
-  transform: scale(0.96);
-  transition: opacity 0.32s ease-out, transform 0.32s ease-out;
+  animation: splashDiamondToLogoAnim 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes splashDiamondToLogoAnim {
+  0% {
+    opacity: 1;
+    transform: scale(1) rotate(45deg);
+  }
+  70% {
+    opacity: 0.8;
+    transform: scale(1) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1) rotate(0deg);
+  }
 }
 
 .step-logo-morph .splash-svg-mark {
@@ -2105,12 +2120,12 @@ input, button, select, textarea {
 }
 
 .step-logo-morph .sp-part-fold {
-  animation: splashFoldPeel 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: splashFoldPeelAnim 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes splashFoldPeel {
+@keyframes splashFoldPeelAnim {
   0% {
-    transform: translate(6px, 6px) scale(0.6);
+    transform: translate(8px, 8px) scale(0.5);
     opacity: 0;
   }
   100% {
@@ -2119,61 +2134,62 @@ input, button, select, textarea {
   }
 }
 
-/* --- TYPOGRAPHY (WORDMARK & TAGLINE) --- */
+/* --- TYPOGRAPHY: WORDMARK & TAGLINE --- */
 .splash-typography {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  text-align: left;
+  align-items: center;
+  text-align: center;
 }
 
 .splash-wordmark {
-  font-size: 2.35rem;
+  font-size: 2.9rem;
   font-weight: 700;
-  color: #1F2937;
-  letter-spacing: -0.025em;
-  line-height: 1.1;
+  color: #111827;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
   margin: 0;
   padding: 0;
   opacity: 0;
-  transform: translateX(-14px) scale(0.98);
-  transition: all 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateX(-16px) scale(0.98);
+  transition: all 0.48s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .splash-tagline {
-  font-size: 0.92rem;
+  font-size: 1.12rem;
   font-weight: 500;
-  color: #6B7280;
-  letter-spacing: 0.01em;
-  margin: 4px 0 0 0;
+  color: #1F2937;
+  letter-spacing: -0.01em;
+  margin: 6px 0 0 0;
   padding: 0;
   opacity: 0;
   transform: translateY(6px);
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.38s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Step 4 (1.70s): Wordmark slides in */
+/* Step 4 (1.20s): Wordmark slides out from right of logo */
 .step-wordmark-reveal .splash-wordmark {
   opacity: 1;
   transform: translateX(0) scale(1);
 }
 
-/* Step 5 (2.70s): Tagline reveals */
+/* Step 5 (1.60s): Tagline reveals centered under OuraDesk */
 .step-tagline-reveal .splash-tagline {
   opacity: 1;
   transform: translateY(0);
 }
 
-/* --- LOADING BAR SECTION --- */
+/* --- 3D PILL LOADING PROGRESS BAR (MATCHING VIDEO) --- */
 .splash-progress-wrapper {
-  margin-top: 42px;
-  width: 320px;
-  max-width: 82vw;
+  margin-top: 36px;
+  width: 390px;
+  max-width: 86vw;
   display: flex;
   flex-direction: column;
   align-items: center;
   opacity: 0;
-  transform: translateY(10px);
+  transform: translateY(12px);
   transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -2182,82 +2198,81 @@ input, button, select, textarea {
   transform: translateY(0);
 }
 
-.splash-progress-track {
+.splash-pill-track {
   width: 100%;
-  height: 6px;
-  background: #E5E7EB;
+  height: 20px;
+  background: #EDEDED;
   border-radius: 999px;
   overflow: hidden;
   position: relative;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.08), 0 1px 0 rgba(255, 255, 255, 0.85), 0 10px 30px rgba(241, 108, 108, 0.2);
+  padding: 2px;
 }
 
-.splash-progress-fill {
+.splash-pill-fill {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, #F16C6C 0%, #F59E72 100%);
+  background: linear-gradient(90deg, #F59E72 0%, #F16C6C 100%);
   border-radius: 999px;
   position: relative;
-  transition: width 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  box-shadow: 0 2px 10px rgba(241, 108, 108, 0.4);
+  transition: width 0.38s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.splash-progress-glow {
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 28px;
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.65) 60%, transparent 100%);
-  border-radius: 999px;
-  animation: splashGlowPulse 1.4s ease-in-out infinite;
+.splash-percent-text {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  padding-right: 8px;
+  line-height: 16px;
+  letter-spacing: 0.02em;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  white-space: nowrap;
 }
 
-@keyframes splashGlowPulse {
-  0%, 100% { opacity: 0.3; transform: scaleX(0.8); }
-  50% { opacity: 0.9; transform: scaleX(1.2); }
-}
-
-.splash-loading-text {
-  font-size: 0.78rem;
-  font-weight: 500;
-  color: #9CA3AF;
-  margin-top: 10px;
-  letter-spacing: 0.015em;
-  transition: color 0.3s ease;
-}
-
-/* --- FINAL TRANSITION OUT (5.80s) --- */
+/* --- FINAL TRANSITION OUT (4.20s) --- */
 .step-splash-exit {
   opacity: 0;
   pointer-events: none;
 }
 
 .step-splash-exit .splash-stage {
-  transform: scale(0.975);
+  transform: scale(0.97);
 }
 
 /* --- MOBILE RESPONSIVE (390px - 430px) --- */
 @media (max-width: 640px) {
+  .splash-lockup-wrapper {
+    gap: 14px;
+  }
   .splash-mark-container {
-    width: 68px;
-    height: 68px;
+    width: 80px;
+    height: 80px;
   }
   .splash-svg-mark {
-    width: 68px;
-    height: 68px;
+    width: 80px;
+    height: 80px;
   }
   .splash-wordmark {
-    font-size: 1.85rem;
+    font-size: 2.15rem;
   }
   .splash-tagline {
-    font-size: 0.82rem;
+    font-size: 0.92rem;
   }
   .splash-progress-wrapper {
-    width: 220px;
-    margin-top: 36px;
+    width: 250px;
+    margin-top: 28px;
   }
-  .splash-progress-track {
-    height: 5px;
+  .splash-pill-track {
+    height: 16px;
+  }
+  .splash-percent-text {
+    font-size: 0.62rem;
+    padding-right: 6px;
   }
 }
 
@@ -2268,7 +2283,7 @@ input, button, select, textarea {
   .splash-wordmark,
   .splash-tagline,
   .splash-progress-wrapper,
-  .splash-progress-fill {
+  .splash-pill-fill {
     transition: none !important;
     animation: none !important;
   }
@@ -2283,4 +2298,5 @@ input, button, select, textarea {
     transform: none !important;
   }
 }
+
 

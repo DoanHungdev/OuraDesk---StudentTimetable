@@ -1,32 +1,24 @@
-/**
- * SplashScreen Component — OuraDesk High-Precision Motion Intro (5.8s Timeline)
- * Recreates the exact choreography, timing, spacing, and transition from reference specification.
- * 
- * Timeline Architecture:
- * 0.00s       : Clean #F7F7F5 background
- * 0.00–0.20s  : 12px Coral square appears at exact center
- * 0.20–1.20s  : Square scales up (12px -> 84px), subtle rotation (-12deg -> 10deg -> -3deg -> 0deg), soft shadow expands
- * 1.20–1.70s  : Square settles and transforms into OuraDesk geometric logo mark (cut paths & page-fold peel)
- * 1.70–2.30s  : Wordmark "OuraDesk" slides in to the right of the logo mark
- * 2.30–2.90s  : Full horizontal logo lockup completes
- * 2.70–3.10s  : Tagline "Chụp TKB. App lo." fades in below wordmark
- * 3.10–3.60s  : Loading bar track appears below the lockup
- * 3.60–5.40s  : Organic progress loading (5% -> 20% -> 55% -> 85% -> 100%)
- * 5.40–5.80s  : Progress hits 100% with soft highlight
- * 5.80s       : Transition out (scale 1 -> 0.98, opacity 1 -> 0) revealing the main dashboard
+﻿/**
+ * SplashScreen Component — OuraDesk High-Precision Motion Intro
+ * Recreated 1:1 from the Reference Video ("Video Project.mp4"):
+ * - Initial Coral square growing and rotating like a diamond (45deg)
+ * - Settling and shifting left as the OuraDesk Logo Mark (with "T" slit and corner-fold peel) materializes
+ * - Wordmark "OuraDesk" sliding out smoothly from the right of the logo mark
+ * - Tagline "Chụp TKB. App lo." centered under the wordmark
+ * - 3D Neumorphic pill progress bar with glowing coral-orange gradient and embedded percentage text
+ * - Seamless transition into the main web application
  */
 
 export const SplashScreen = {
   container: null,
   isCompleted: false,
   startTime: 0,
-  progressValue: 0,
-  minDuration: 5800, // 5.8 seconds
+  minDuration: 4200, // Matching 4.2s video timeline
 
   init(onComplete) {
     this.onComplete = onComplete;
     
-    // Check if intro has already played in this browser session
+    // Session check: play once per session unless replayed
     const hasPlayed = sessionStorage.getItem('ouradesk.introPlayed');
     if (hasPlayed === 'true') {
       if (this.onComplete) this.onComplete();
@@ -52,76 +44,83 @@ export const SplashScreen = {
         <!-- Center Stage: Logo Lockup Container -->
         <div class="splash-lockup-wrapper" id="splash-lockup">
           
-          <!-- Logo Mark + Morphing Square -->
+          <!-- Logo Mark Box -->
           <div class="splash-mark-container" id="splash-mark-box">
-            <!-- Dynamic Soft Shadow under the square/logo -->
+            <!-- Warm Diffuse Ambient Shadow -->
             <div class="splash-mark-shadow" id="splash-shadow"></div>
 
-            <!-- The Initial 12px Coral Square that expands and morphs -->
+            <!-- Morphing Diamond / Square Shape -->
             <div class="splash-initial-square" id="splash-square"></div>
 
-            <!-- SVG Vector Logo Mark (Revealed as square morphs) -->
+            <!-- Full Vector OuraDesk Brand Mark -->
             <div class="splash-svg-mark" id="splash-svg-mark">
               <svg viewBox="0 0 100 100" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <defs>
+                  <!-- Top Bar Gradient -->
                   <linearGradient id="spTopGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                     <stop offset="0%" stop-color="#F16C6C" />
                     <stop offset="100%" stop-color="#F59E72" />
                   </linearGradient>
+                  
+                  <!-- Bottom Left Gradient -->
                   <linearGradient id="spBottomLeftGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                     <stop offset="0%" stop-color="#E85D75" />
                     <stop offset="60%" stop-color="#F16C6C" />
                     <stop offset="100%" stop-color="#F59E72" />
                   </linearGradient>
+
+                  <!-- Right Pillar Gradient -->
                   <linearGradient id="spRightGrad" x1="0%" y1="0%" x2="0%" y2="100%">
                     <stop offset="0%" stop-color="#F59E72" />
                     <stop offset="100%" stop-color="#F16C6C" />
                   </linearGradient>
+
+                  <!-- Page Fold Peel Gradient -->
                   <linearGradient id="spFoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                     <stop offset="0%" stop-color="#FFDDD4" />
                     <stop offset="50%" stop-color="#FFBBAA" />
                     <stop offset="100%" stop-color="#FFA085" />
                   </linearGradient>
-                  <filter id="spFoldShadow" x="-20%" y="-20%" width="140%" height="140%">
-                    <feDropShadow dx="-1" dy="-1" stdDeviation="1.5" flood-color="#7A2210" flood-opacity="0.25" />
+
+                  <filter id="spFoldShadow" x="-30%" y="-30%" width="160%" height="160%">
+                    <feDropShadow dx="-1.5" dy="-1.5" stdDeviation="2" flood-color="#6B1D0E" flood-opacity="0.3" />
                   </filter>
                 </defs>
 
-                <!-- Part 1: Top Bar -->
+                <!-- Part 1: Top Bar (Rounded Top-Left & Top-Right) -->
                 <path class="sp-part sp-part-top" d="M 12 10 L 88 10 A 14 14 0 0 1 100 24 L 100 38 L 62 38 L 62 44 L 10 44 L 10 24 A 14 14 0 0 1 24 10 Z" fill="url(#spTopGrad)" />
 
-                <!-- Part 2: Bottom-Left Polygon -->
+                <!-- Part 2: Bottom-Left Polygon (Chamfered Top-Right) -->
                 <path class="sp-part sp-part-bl" d="M 10 50 L 26 50 L 48 72 L 48 90 L 24 90 A 14 14 0 0 1 10 76 Z" fill="url(#spBottomLeftGrad)" />
 
-                <!-- Part 3: Right Pillar -->
+                <!-- Part 3: Right Vertical Pillar / Stem -->
                 <path class="sp-part sp-part-right" d="M 54 44 L 100 44 L 100 68 L 76 90 L 54 90 Z" fill="url(#spRightGrad)" />
 
-                <!-- Part 4: Folded Corner -->
+                <!-- Part 4: Folded Page Corner (Peel Effect) -->
                 <path class="sp-part sp-part-fold" d="M 76 90 L 100 68 L 76 68 Z" fill="url(#spFoldGrad)" filter="url(#spFoldShadow)" />
               </svg>
             </div>
           </div>
 
-          <!-- Typography Box (Wordmark + Tagline) -->
+          <!-- Typography Box: Wordmark + Tagline -->
           <div class="splash-typography" id="splash-typo">
             <h1 class="splash-wordmark" id="splash-wordmark">OuraDesk</h1>
             <p class="splash-tagline" id="splash-tagline">Chụp TKB. App lo.</p>
           </div>
         </div>
 
-        <!-- Loading Bar Section -->
+        <!-- 3D Pill Loading Progress Bar Section -->
         <div class="splash-progress-wrapper" id="splash-progress-box">
-          <div class="splash-progress-track">
-            <div class="splash-progress-fill" id="splash-progress-fill">
-              <div class="splash-progress-glow"></div>
+          <div class="splash-pill-track">
+            <div class="splash-pill-fill" id="splash-progress-fill">
+              <span class="splash-percent-text" id="splash-percent-label"></span>
             </div>
           </div>
-          <div class="splash-loading-text" id="splash-loading-text">Đang tải thời khóa biểu...</div>
         </div>
       </div>
     `;
 
-    // Global developer helper functions
+    // Developer convenience helpers
     window.ouradeskReplayIntro = () => {
       sessionStorage.removeItem('ouradesk.introPlayed');
       window.location.reload();
@@ -136,75 +135,74 @@ export const SplashScreen = {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (prefersReducedMotion) {
-      // Reduced motion: simplified quick fade
-      setTimeout(() => this.finish(), 1200);
+      setTimeout(() => this.finish(), 800);
       return;
     }
 
-    // Step-by-step Class Triggering matching the exact reference timeline:
+    // Timeline matching reference video:
     
-    // T = 0.05s: Initial 12px dot appears
+    // T = 0.05s: Initial small coral dot appears
     setTimeout(() => {
       this.container?.classList.add('step-dot-appear');
     }, 50);
 
-    // T = 0.20s: Square grows from 12px -> 84px with rotation (-12deg -> 10deg -> -3deg -> 0deg)
+    // T = 0.20s: Diamond Grow & Rotation (scale up, rotates 45deg, diffuse shadow expands)
     setTimeout(() => {
       this.container?.classList.add('step-square-grow');
     }, 200);
 
-    // T = 1.20s: Settle and Morph into OuraDesk Logo Mark
+    // T = 1.00s: Settle and Morph into OuraDesk Logo Mark (splits + corner fold)
     setTimeout(() => {
       this.container?.classList.add('step-logo-morph');
-    }, 1200);
+    }, 1000);
 
-    // T = 1.70s: Wordmark reveals to the right of logo mark
+    // T = 1.20s: Wordmark "OuraDesk" slides out from the logo
     setTimeout(() => {
       this.container?.classList.add('step-wordmark-reveal');
-    }, 1700);
+    }, 1200);
 
-    // T = 2.70s: Tagline "Chụp TKB. App lo." reveals
+    // T = 1.60s: Tagline "Chụp TKB. App lo." reveals underneath
     setTimeout(() => {
       this.container?.classList.add('step-tagline-reveal');
-    }, 2700);
+    }, 1600);
 
-    // T = 3.10s: Progress bar track appears
+    // T = 2.00s: 3D Pill Progress Bar appears & animates
     setTimeout(() => {
       this.container?.classList.add('step-progress-appear');
       this.runProgressAnimation();
-    }, 3100);
+    }, 2000);
   },
 
   runProgressAnimation() {
     const progressFill = document.getElementById('splash-progress-fill');
-    const loadingText = document.getElementById('splash-loading-text');
+    const percentLabel = document.getElementById('splash-percent-label');
 
-    // Milestones from app start (0ms):
+    // Smooth organic steps matching video duration (2.0s -> 3.9s):
     const keyframes = [
-      { totalTime: 3500, percent: 12, text: 'Đang tải dữ liệu trường học...' },
-      { totalTime: 4000, percent: 28, text: 'Xác thực chương trình đào tạo...' },
-      { totalTime: 4600, percent: 58, text: 'Đồng bộ thời khóa biểu sinh viên...' },
-      { totalTime: 5100, percent: 84, text: 'Kiểm tra deadline & bài tập...' },
-      { totalTime: 5500, percent: 98, text: 'Hoàn tất cấu hình giao diện...' },
-      { totalTime: 5750, percent: 100, text: 'Sẵn sàng!' }
+      { delay: 100, percent: 15 },
+      { delay: 400, percent: 35 },
+      { delay: 800, percent: 65 },
+      { delay: 1200, percent: 88 },
+      { delay: 1600, percent: 98 },
+      { delay: 1900, percent: 100 }
     ];
 
     keyframes.forEach(step => {
-      const delay = Math.max(0, step.totalTime - 3100);
       setTimeout(() => {
         if (progressFill && !this.isCompleted) {
           progressFill.style.width = `${step.percent}%`;
+          if (percentLabel && step.percent >= 90) {
+            percentLabel.textContent = `${step.percent}%`;
+            percentLabel.style.opacity = '1';
+          }
         }
-        if (loadingText && !this.isCompleted && step.text) {
-          loadingText.textContent = step.text;
-        }
-      }, delay);
+      }, step.delay);
     });
 
-    // T = 5.80s (2700ms after 3.10s): Trigger Exit Transition
+    // T = 4.20s (2200ms after progress starts): Transition Out to App
     setTimeout(() => {
       this.finish();
-    }, Math.max(0, this.minDuration - 3100));
+    }, 2200);
   },
 
   finish() {
@@ -223,7 +221,7 @@ export const SplashScreen = {
         if (this.onComplete) {
           this.onComplete();
         }
-      }, 480);
+      }, 420);
     } else {
       if (this.onComplete) this.onComplete();
     }
