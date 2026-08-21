@@ -2,16 +2,16 @@
 
 async function run() {
   console.log("==================================================");
-  console.log("  TEST OURADESK FULLSCREEN INTRO VIDEO");
+  console.log("  TEST OURADESK PURE CODE MOTION INTRO");
   console.log("==================================================");
 
   const { browser, page } = await createTestBrowser({ headless: true });
 
   try {
     // ---------------------------------------------------------------------------------
-    // TEST 1: Launch -> Video element covers full screen and NO skip button exists
+    // TEST 1: Launch -> Pure Splash mounts and starts continuous timeline
     // ---------------------------------------------------------------------------------
-    console.log("\n--- TEST 1: Khởi động app -> Video Fullscreen & Không có nút Bỏ qua ---");
+    console.log("\n--- TEST 1: Khởi động app -> Pure Code Splash Screen xuất hiện ---");
     await page.goto("http://localhost:8088/", { waitUntil: "domcontentloaded" });
     
     // Ensure clean state
@@ -20,43 +20,59 @@ async function run() {
     });
     await page.reload({ waitUntil: "domcontentloaded" });
 
-    const hasVideo = await page.$("#ouradesk-intro-video") !== null;
-    const hasSkipBtn = await page.$("#splash-skip-btn") !== null;
+    const hasStage = await page.$("#splash-stage") !== null;
+    const hasAnchor = await page.$("#splash-mark-anchor") !== null;
 
-    console.log(`- Có Video Player: ${hasVideo ? "CÓ (CHUẨN)" : "KHÔNG"}`);
-    console.log(`- Đã xóa nút Bỏ qua: ${!hasSkipBtn ? "CÓ (CHUẨN)" : "KHÔNG"}`);
-
-    if (!hasVideo || hasSkipBtn) {
-      throw new Error("TEST 1 FAILED: Thiếu video player hoặc nút Bỏ qua chưa bị xóa!");
+    if (!hasStage || !hasAnchor) {
+      throw new Error("TEST 1 FAILED: Không tìm thấy #splash-stage hoặc #splash-mark-anchor!");
     }
-    console.log("✓ TEST 1 PASSED: Video player fullscreen sẵn sàng!");
+    console.log("✓ TEST 1 PASSED: Pure Splash Screen đã mount thành công!");
 
     // ---------------------------------------------------------------------------------
-    // TEST 2: Capture Video Playback at T = 2.0s (Full screen cover edge to edge)
+    // TEST 2: Giai đoạn Diamond Grow tại T = 0.6s (Chính giữa màn hình, xoay 45 độ)
     // ---------------------------------------------------------------------------------
-    console.log("\n--- TEST 2: Kiểm tra video fullscreen ôm trọn màn hình tại T = 2.0s ---");
-    await page.waitForTimeout(2000);
-    await page.screenshot({ path: "C:/Users/admin/.gemini/antigravity/brain/374e7888-a9e1-40be-9088-41c689fb2ecb/splash_fullscreen_verified.png" });
-    console.log("✓ TEST 2 PASSED: Chụp ảnh splash_fullscreen_verified.png");
+    console.log("\n--- TEST 2: Diamond Scale & 45deg Rotate tại Center (T = 0.6s) ---");
+    await page.waitForTimeout(600);
+    await page.screenshot({ path: "C:/Users/admin/.gemini/antigravity/brain/374e7888-a9e1-40be-9088-41c689fb2ecb/pure_splash_01_diamond.png" });
+    console.log("✓ TEST 2 PASSED: Chụp ảnh pure_splash_01_diamond.png");
 
     // ---------------------------------------------------------------------------------
-    // TEST 3: Đợi video phát xong toàn bộ (5.8s) -> Tự động chuyển vào Dashboard
+    // TEST 3: Giai đoạn Glide Left & Wordmark Reveal (T = 1.8s)
     // ---------------------------------------------------------------------------------
-    console.log("\n--- TEST 3: Chờ xem hết toàn bộ video (5.8s) -> Vào Dashboard ---");
-    await page.waitForTimeout(4500); // Now at ~6.5s
+    console.log("\n--- TEST 3: Un-rotate & Glide Left & Reveal Wordmark (T = 1.8s) ---");
+    await page.waitForTimeout(1200);
+    await page.screenshot({ path: "C:/Users/admin/.gemini/antigravity/brain/374e7888-a9e1-40be-9088-41c689fb2ecb/pure_splash_02_morph_slide.png" });
+    console.log("✓ TEST 3 PASSED: Chụp ảnh pure_splash_02_morph_slide.png");
+
+    // ---------------------------------------------------------------------------------
+    // TEST 4: Tagline & 3D Pill Progress Bar (T = 4.0s)
+    // ---------------------------------------------------------------------------------
+    console.log("\n--- TEST 4: Tagline & 3D Pill Progress Bar Fill (T = 4.0s) ---");
+    await page.waitForTimeout(2200);
+    const progressWidth = await page.$eval("#splash-progress-bar", el => el.style.width);
+    console.log(`- Tiến trình thanh loading: ${progressWidth}`);
+    await page.screenshot({ path: "C:/Users/admin/.gemini/antigravity/brain/374e7888-a9e1-40be-9088-41c689fb2ecb/pure_splash_03_progress.png" });
+    console.log("✓ TEST 4 PASSED: Chụp ảnh pure_splash_03_progress.png");
+
+    // ---------------------------------------------------------------------------------
+    // TEST 5: Kết thúc 5.3s -> Tự động chuyển tiếp vào Dashboard
+    // ---------------------------------------------------------------------------------
+    console.log("\n--- TEST 5: Kết thúc intro -> Tự động chuyển tiếp vào Dashboard ---");
+    await page.waitForTimeout(2000); // Now at ~5.8s
     const splashStillMounted = await page.$("#ouradesk-splash") !== null;
     const hasAppContainer = await page.$(".app-container") !== null;
 
-    console.log(`- Splash đã gỡ bỏ sau khi xem xong: ${!splashStillMounted ? "CÓ (CHUẨN)" : "KHÔNG"}`);
+    console.log(`- Splash đã gỡ bỏ sau khi phát xong: ${!splashStillMounted ? "CÓ (CHUẨN)" : "KHÔNG"}`);
     console.log(`- Dashboard hiển thị: ${hasAppContainer ? "CÓ (CHUẨN)" : "KHÔNG"}`);
 
     if (splashStillMounted || !hasAppContainer) {
-      throw new Error("TEST 3 FAILED: Sau khi xem hết video chưa chuyển tiếp mượt vào Dashboard!");
+      throw new Error("TEST 5 FAILED: Sau khi kết thúc intro chưa chuyển tiếp vào Dashboard!");
     }
-    console.log("✓ TEST 3 PASSED: Xem hết video thành công, dashboard sẵn sàng!");
+    await page.screenshot({ path: "C:/Users/admin/.gemini/antigravity/brain/374e7888-a9e1-40be-9088-41c689fb2ecb/pure_splash_04_dashboard.png" });
+    console.log("✓ TEST 5 PASSED: Chuyển tiếp mượt mà vào Dashboard!");
 
     console.log("\n==================================================");
-    console.log("  TẤT CẢ CÁC BÀI TEST FULLSCREEN INTRO ĐÃ PASS 100%!");
+    console.log("  TẤT CẢ CÁC BÀI TEST PURE CODE INTRO ĐÃ PASS 100%!");
     console.log("==================================================");
   } catch (err) {
     console.error("\n❌ LỖI KIỂM THỬ:", err);

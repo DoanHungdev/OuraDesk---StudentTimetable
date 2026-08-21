@@ -1951,8 +1951,8 @@ input, button, select, textarea {
 }
 
 /* ==========================================================================
-   OURADESK MOTION INTRO & SPLASH SCREEN (FULLSCREEN IMMERSIVE VIDEO)
-   Zero Letterbox, Fullscreen Cover, Seamless Dashboard Transition
+   OURADESK PURE CODE MOTION INTRO & SPLASH SCREEN
+   100% Seamless Continuous Physics, Zero-Video Native GPU Animation
    ========================================================================== */
 
 .ouradesk-splash-screen {
@@ -1961,7 +1961,8 @@ input, button, select, textarea {
   width: 100vw;
   height: 100vh;
   z-index: 999999;
-  background: #F4F4F4;
+  background: #F5F5F3;
+  background-image: radial-gradient(circle at 50% 46%, #FFFFFF 0%, #F5F5F3 85%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1970,42 +1971,380 @@ input, button, select, textarea {
   padding: 0;
   user-select: none;
   -webkit-user-select: none;
+  font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   opacity: 1;
   transform: scale(1);
   transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: default;
 }
 
-.splash-video-stage {
-  position: absolute;
-  inset: 0;
+.pure-splash-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
   width: 100%;
-  height: 100%;
+  max-width: 600px;
+  min-height: 260px;
+}
+
+/* Master Lockup Row */
+.pure-splash-lockup {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #F4F4F4;
-  overflow: hidden;
+  position: relative;
+  min-height: 110px;
+  width: 420px;
 }
 
-.splash-video-player {
+/* --- LOGO MARK ANCHOR (Starts centered, glides left) --- */
+.pure-mark-anchor {
+  position: absolute;
+  left: 0;
+  width: 108px;
+  height: 108px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateX(156px); /* Centers logo in the 420px lockup at start */
+}
+
+.pure-animate .pure-mark-anchor {
+  animation: pureAnchorGlide 5.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes pureAnchorGlide {
+  0%, 18% {
+    transform: translateX(156px); /* Center stage */
+  }
+  38%, 100% {
+    transform: translateX(0px); /* Final left position */
+  }
+}
+
+/* Dynamic Soft Ambient Shadow */
+.pure-mark-shadow {
+  position: absolute;
+  bottom: -16px;
+  left: 50%;
+  transform: translateX(-50%) scale(0.1);
+  width: 90px;
+  height: 22px;
+  background: rgba(235, 85, 45, 0.25);
+  filter: blur(14px);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pure-animate .pure-mark-shadow {
+  animation: pureShadowAnim 5.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes pureShadowAnim {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.1);
+  }
+  15% {
+    opacity: 0.9;
+    transform: translateX(-50%) scale(1.1);
+  }
+  38%, 100% {
+    opacity: 0.75;
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+/* Morphing Diamond Shape Container */
+.pure-mark-shape {
+  width: 108px;
+  height: 108px;
+  position: relative;
+  transform: scale(0) rotate(0deg);
+  opacity: 0;
+}
+
+.pure-animate .pure-mark-shape {
+  animation: pureDiamondShapeAnim 5.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes pureDiamondShapeAnim {
+  0% {
+    opacity: 0;
+    transform: scale(0.1) rotate(0deg) translateY(0);
+  }
+  16% {
+    opacity: 1;
+    transform: scale(1.04) rotate(45deg) translateY(-8px);
+  }
+  22% {
+    opacity: 1;
+    transform: scale(1) rotate(45deg) translateY(0);
+  }
+  38%, 100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg) translateY(0);
+  }
+}
+
+/* SVG Elements inside Logo */
+.pure-logo-svg {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center;
-  background: #F4F4F4;
-  outline: none;
-  border: none;
   display: block;
-  pointer-events: none;
+}
+
+.pure-solid-bg {
+  opacity: 1;
+  transition: opacity 0.4s ease;
+}
+
+.pure-animate .pure-solid-bg {
+  animation: pureSolidFadeOut 5.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes pureSolidFadeOut {
+  0%, 25% {
+    opacity: 1;
+  }
+  36%, 100% {
+    opacity: 0;
+  }
+}
+
+.pure-part {
+  opacity: 0;
+}
+
+.pure-animate .pure-part-top,
+.pure-animate .pure-part-bl,
+.pure-animate .pure-part-right {
+  animation: purePartsFadeIn 5.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes purePartsFadeIn {
+  0%, 26% {
+    opacity: 0;
+  }
+  36%, 100% {
+    opacity: 1;
+  }
+}
+
+.pure-part-fold {
+  opacity: 0;
+  transform-origin: 76px 68px;
+}
+
+.pure-animate .pure-part-fold {
+  animation: pureFoldPeelAnim 5.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes pureFoldPeelAnim {
+  0%, 28% {
+    opacity: 0;
+    transform: translate(6px, 6px) scale(0.4);
+  }
+  38%, 100% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+/* --- TYPOGRAPHY MASK & CONTENT --- */
+.pure-typo-mask {
+  position: absolute;
+  left: 128px;
+  right: 0;
+  height: 108px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  clip-path: inset(0 100% 0 0);
+}
+
+.pure-animate .pure-typo-mask {
+  animation: pureTypoMaskReveal 5.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes pureTypoMaskReveal {
+  0%, 24% {
+    clip-path: inset(0 100% 0 0);
+  }
+  42%, 100% {
+    clip-path: inset(0 0% 0 0);
+  }
+}
+
+.pure-typo-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  transform: translateX(-40px);
+  opacity: 0;
+}
+
+.pure-animate .pure-typo-content {
+  animation: pureTypoSlideOut 5.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes pureTypoSlideOut {
+  0%, 24% {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  40%, 100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.pure-wordmark {
+  font-size: 3.1rem;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+}
+
+.pure-tagline {
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: #262626;
+  letter-spacing: -0.01em;
+  margin: 8px 0 0 0;
+  padding: 0;
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.pure-animate .pure-tagline {
+  animation: pureTaglineReveal 5.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes pureTaglineReveal {
+  0%, 38% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  50%, 100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- 3D PILL PROGRESS BAR --- */
+.pure-progress-container {
+  margin-top: 36px;
+  width: 400px;
+  max-width: 86vw;
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.pure-animate .pure-progress-container {
+  animation: pureProgressAppear 5.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes pureProgressAppear {
+  0%, 48% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  58%, 100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pure-progress-track {
+  width: 100%;
+  height: 22px;
+  background: #ECECEB;
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08), 0 1px 0 rgba(255, 255, 255, 0.9), 0 10px 28px rgba(241, 108, 108, 0.22);
+  padding: 2px;
+}
+
+.pure-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #F59E72 0%, #F16C6C 100%);
+  border-radius: 999px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  box-shadow: 0 2px 10px rgba(241, 108, 108, 0.4);
+  transition: width 0.08s linear;
+}
+
+.pure-progress-text {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  padding-right: 8px;
+  line-height: 18px;
+  letter-spacing: 0.02em;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
 }
 
 /* Exit Transition into App */
 .step-splash-exit {
   opacity: 0;
-  transform: scale(0.985);
+  transform: scale(0.98);
   pointer-events: none;
 }
+
+/* Mobile Responsive */
+@media (max-width: 640px) {
+  .pure-splash-lockup {
+    width: 320px;
+    min-height: 84px;
+  }
+  .pure-mark-anchor {
+    width: 80px;
+    height: 80px;
+    transform: translateX(120px);
+  }
+  @keyframes pureAnchorGlide {
+    0%, 18% { transform: translateX(120px); }
+    38%, 100% { transform: translateX(0px); }
+  }
+  .pure-mark-shape {
+    width: 80px;
+    height: 80px;
+  }
+  .pure-typo-mask {
+    left: 96px;
+    height: 80px;
+  }
+  .pure-wordmark {
+    font-size: 2.3rem;
+  }
+  .pure-tagline {
+    font-size: 0.95rem;
+    margin-top: 4px;
+  }
+  .pure-progress-container {
+    width: 280px;
+    margin-top: 28px;
+  }
+  .pure-progress-track {
+    height: 18px;
+  }
+}
+
 
 
 
