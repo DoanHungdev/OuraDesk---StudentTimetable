@@ -534,6 +534,9 @@ export const SettingsView = {
               <button id="btn-export-ical" class="glass-button">
                 <i data-lucide="calendar-plus" style="width: 15px; height: 15px;"></i> Xuất iCal (.ics)
               </button>
+              <button id="btn-replay-intro" class="glass-button" style="background: rgba(241,108,108,0.1); border-color: rgba(241,108,108,0.3); color: #F16C6C; font-weight: 600;">
+                <i data-lucide="play" style="width: 14px; height: 14px;"></i> Xem lại Intro (5.8s)
+              </button>
             </div>
 
             <button id="btn-reset-defaults" class="glass-button" style="color: var(--color-text-secondary); font-size: 0.78rem;">
@@ -653,6 +656,9 @@ export const SettingsView = {
     container.querySelector('#btn-settings-toggle-mode')?.addEventListener('click', onSwitchMode);
     container.querySelector('#btn-set-import-tkb')?.addEventListener('click', onOpenImport);
     container.querySelector('#btn-set-wallpaper')?.addEventListener('click', onExportWallpaper);
+    container.querySelector('#btn-replay-intro')?.addEventListener('click', () => {
+      window.ouradeskReplayIntro?.();
+    });
 
     const openAvatarModal = () => {
       AvatarModal.openModal(user);

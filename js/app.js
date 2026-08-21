@@ -45,6 +45,7 @@ import { ThemeEngine } from './theme/themeEngine.js';
 import { CalendarEngine } from './utils/calendarEngine.js';
 import { AssignmentRepository } from './repositories/assignmentRepository.js';
 import { HomeworkRepository } from './repositories/homeworkRepository.js';
+import { SplashScreen } from './components/SplashScreen.js';
 
 class App {
   constructor() {
@@ -69,12 +70,15 @@ class App {
     this.setupResizeListener();
     this.setupTimeTicker();
 
-    // Check first-run onboarding
-    if (!Storage.hasOnboarded()) {
-      setTimeout(() => {
-        OnboardingModal.openOnboarding();
-      }, 300);
-    }
+    // Start OuraDesk Motion Intro & Splash Screen (5.8s Timeline)
+    SplashScreen.init(() => {
+      // Check first-run onboarding after splash screen finishes
+      if (!Storage.hasOnboarded()) {
+        setTimeout(() => {
+          OnboardingModal.openOnboarding();
+        }, 300);
+      }
+    });
   }
 
   initModals() {

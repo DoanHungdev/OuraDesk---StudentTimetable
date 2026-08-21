@@ -1,0 +1,13 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%" fill="none">
+  <!-- 1. Top Section -->
+  <path d="M 12 10 L 88 10 A 14 14 0 0 1 100 24 L 100 38 L 62 38 L 62 44 L 10 44 L 10 24 A 14 14 0 0 1 24 10 Z" fill="#FFFFFF" />
+
+  <!-- 2. Bottom-Left Section -->
+  <path d="M 10 50 L 26 50 L 48 72 L 48 90 L 24 90 A 14 14 0 0 1 10 76 Z" fill="#FFFFFF" opacity="0.92" />
+
+  <!-- 3. Right Vertical Pillar -->
+  <path d="M 54 44 L 100 44 L 100 68 L 76 90 L 54 90 Z" fill="#FFFFFF" opacity="0.95" />
+
+  <!-- 4. Folded Corner -->
+  <path d="M 76 90 L 100 68 L 76 68 Z" fill="#FFFFFF" opacity="0.75" />
+</svg>

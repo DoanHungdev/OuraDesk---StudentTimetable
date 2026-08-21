@@ -1949,3 +1949,338 @@ input, button, select, textarea {
     max-height: 88vh !important;
   }
 }
+
+/* ==========================================================================
+   OURADESK MOTION INTRO & SPLASH SCREEN (5.8S TIMELINE SPECIFICATION)
+   Minimal, Clean, Quiet, Brand-focused
+   ========================================================================== */
+
+.ouradesk-splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  background: #F7F7F5;
+  background-image: radial-gradient(circle at 50% 45%, #FFFFFF 0%, #F7F7F5 75%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  -webkit-user-select: none;
+  font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  opacity: 1;
+  transition: opacity 0.48s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.splash-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 600px;
+  padding: 24px;
+  transform: scale(1);
+  transition: transform 0.48s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* --- LOGO LOCKUP CONTAINER --- */
+.splash-lockup-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 96px;
+  position: relative;
+}
+
+/* --- LOGO MARK & MORPHING SQUARE --- */
+.splash-mark-container {
+  width: 84px;
+  height: 84px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Dynamic Soft Shadow */
+.splash-mark-shadow {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%) scale(0.15);
+  width: 72px;
+  height: 16px;
+  background: rgba(230, 80, 50, 0.18);
+  filter: blur(10px);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.95s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.8s ease;
+}
+
+/* Initial 12px Coral Dot / Square */
+.splash-initial-square {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: linear-gradient(135deg, #F16C6C 0%, #F59E72 100%);
+  opacity: 0;
+  transform: scale(0.2) rotate(0deg);
+  box-shadow: 0 4px 14px rgba(241, 108, 108, 0.25);
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+
+/* Step 1 (0.05s): Dot appears */
+.step-dot-appear .splash-initial-square {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+/* Step 2 (0.20s - 1.20s): Square grows, rotates (-12deg -> 10deg -> -3deg -> 0deg), lifts Y */
+.step-square-grow .splash-initial-square {
+  animation: splashSquareGrowAnim 0.98s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.step-square-grow .splash-mark-shadow {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+@keyframes splashSquareGrowAnim {
+  0% {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    transform: scale(1) rotate(-12deg) translateY(0);
+  }
+  35% {
+    width: 90px;
+    height: 90px;
+    border-radius: 20px;
+    transform: scale(1.05) rotate(10deg) translateY(-8px);
+  }
+  70% {
+    width: 84px;
+    height: 84px;
+    border-radius: 18px;
+    transform: scale(0.98) rotate(-3deg) translateY(2px);
+  }
+  100% {
+    width: 84px;
+    height: 84px;
+    border-radius: 18px;
+    transform: scale(1) rotate(0deg) translateY(0);
+  }
+}
+
+/* SVG Vector Brand Mark */
+.splash-svg-mark {
+  width: 84px;
+  height: 84px;
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: scale(0.96);
+  pointer-events: none;
+  transition: opacity 0.38s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sp-part {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Step 3 (1.20s): Morph from solid square to Vector Logo Mark with corner peel */
+.step-logo-morph .splash-initial-square {
+  opacity: 0;
+  transform: scale(0.96);
+  transition: opacity 0.32s ease-out, transform 0.32s ease-out;
+}
+
+.step-logo-morph .splash-svg-mark {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.step-logo-morph .sp-part-fold {
+  animation: splashFoldPeel 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes splashFoldPeel {
+  0% {
+    transform: translate(6px, 6px) scale(0.6);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* --- TYPOGRAPHY (WORDMARK & TAGLINE) --- */
+.splash-typography {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
+}
+
+.splash-wordmark {
+  font-size: 2.35rem;
+  font-weight: 700;
+  color: #1F2937;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  transform: translateX(-14px) scale(0.98);
+  transition: all 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.splash-tagline {
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: #6B7280;
+  letter-spacing: 0.01em;
+  margin: 4px 0 0 0;
+  padding: 0;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Step 4 (1.70s): Wordmark slides in */
+.step-wordmark-reveal .splash-wordmark {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+}
+
+/* Step 5 (2.70s): Tagline reveals */
+.step-tagline-reveal .splash-tagline {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --- LOADING BAR SECTION --- */
+.splash-progress-wrapper {
+  margin-top: 42px;
+  width: 320px;
+  max-width: 82vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.step-progress-appear .splash-progress-wrapper {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.splash-progress-track {
+  width: 100%;
+  height: 6px;
+  background: #E5E7EB;
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.splash-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #F16C6C 0%, #F59E72 100%);
+  border-radius: 999px;
+  position: relative;
+  transition: width 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.splash-progress-glow {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 28px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.65) 60%, transparent 100%);
+  border-radius: 999px;
+  animation: splashGlowPulse 1.4s ease-in-out infinite;
+}
+
+@keyframes splashGlowPulse {
+  0%, 100% { opacity: 0.3; transform: scaleX(0.8); }
+  50% { opacity: 0.9; transform: scaleX(1.2); }
+}
+
+.splash-loading-text {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #9CA3AF;
+  margin-top: 10px;
+  letter-spacing: 0.015em;
+  transition: color 0.3s ease;
+}
+
+/* --- FINAL TRANSITION OUT (5.80s) --- */
+.step-splash-exit {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.step-splash-exit .splash-stage {
+  transform: scale(0.975);
+}
+
+/* --- MOBILE RESPONSIVE (390px - 430px) --- */
+@media (max-width: 640px) {
+  .splash-mark-container {
+    width: 68px;
+    height: 68px;
+  }
+  .splash-svg-mark {
+    width: 68px;
+    height: 68px;
+  }
+  .splash-wordmark {
+    font-size: 1.85rem;
+  }
+  .splash-tagline {
+    font-size: 0.82rem;
+  }
+  .splash-progress-wrapper {
+    width: 220px;
+    margin-top: 36px;
+  }
+  .splash-progress-track {
+    height: 5px;
+  }
+}
+
+/* --- REDUCED MOTION ACCESSIBILITY --- */
+@media (prefers-reduced-motion: reduce) {
+  .splash-initial-square,
+  .splash-svg-mark,
+  .splash-wordmark,
+  .splash-tagline,
+  .splash-progress-wrapper,
+  .splash-progress-fill {
+    transition: none !important;
+    animation: none !important;
+  }
+  .splash-initial-square {
+    display: none !important;
+  }
+  .splash-svg-mark,
+  .splash-wordmark,
+  .splash-tagline,
+  .splash-progress-wrapper {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
